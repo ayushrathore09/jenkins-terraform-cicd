@@ -6,38 +6,11 @@ resource "aws_instance" "server1" {
     tags = {
       Name = "test-server"
     }
-    user_data = <<-EOF
-                #!/bin/bash
-                sudo apt update -y
-                sudo apt install -y nginx
-                EOF
-
-
-    # provisioner "remote-exec" {
-    #   on_failure = continue
-    #   inline = [
-    #     "sudo apt update -y",
-    #     "sudo apt install -y nginx",
-    #     "sudo systemctl start nginx",
-    #     "sudo systemctl enable nginx"
-    #   ]
-    #   // remote_exec requires authentication mechanism:
-    #   connection {
-    #     type        = "ssh"
-    #     host       = self.public_ip
-    #     user       = "ubuntu"
-    #     private_key = file("c:\\Users\\user\\.ssh\\id_ed25519")
-    #   }
-
-    # }
-    # provisioner "local-exec" {
-    #   command = "echo 'Provisioning complete!'"
-    # }
 }
 
 resource "aws_key_pair" "test-key" {
   key_name   = "test-key"
-  public_key = file("/home/ubuntu/.ssh/id_ed25519.pub")
+  public_key = file("/c/Users/user/.ssh/id_ed25519.pub")
 }
 
 resource "aws_security_group" "test-sg" {
