@@ -10,7 +10,9 @@ resource "aws_instance" "server1" {
 
 resource "aws_key_pair" "test-key" {
   key_name   = "test-key"
-  public_key = file("mykey.pub")
+  //public_key = file("mykey.pub")
+  // will pass those keys present on jenkins server
+  public_key = file("/home/ubuntu/.ssh/id_ed25519.pub")
 }
 
 resource "aws_security_group" "test-sg" {
