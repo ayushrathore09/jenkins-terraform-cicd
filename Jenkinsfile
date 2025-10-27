@@ -15,6 +15,7 @@ pipeline {
         stage('code checkout'){
             steps{
                 git url: "https://github.com/ayushrathore09/jenkins-terraform-cicd.git", branch: "master"
+            }
         }
 
         stage('Terraform Init'){
@@ -31,5 +32,4 @@ pipeline {
             }
         }
     }
-
 }
