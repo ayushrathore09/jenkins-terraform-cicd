@@ -29,3 +29,7 @@ resource "aws_security_group" "test-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+output "test_server_ip" {
+  value = aws_instance.server1.public_ip
+}
