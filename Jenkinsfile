@@ -27,7 +27,23 @@ pipeline {
                 ]) {
                   sh 'terraform plan -out=tfplan' // this tfplan is a binary file which contains the execution plan
                 }
+                sh 'terraform show -no-color tfplan > output_plan.txt' // converting binary file to human readable format
+                //archiving the tfplan file
+                archiveArtifacts artifacts: 'tfplan','output_plan.txt', fingerprint: true, onlyIfSuccessful: true
             }   
+        }
+
+        stage('Approval'){
+            steps{
+                input message: 'Do you want to apply the changes?', ok: 'Apply'
+            }
+        }
+
+        stage('trigger by code'){
+            steps{
+                echo "Triggering terraform apply job"
+                build job: 'terraform-apply', wait: false
+            }
         }
     }
 }

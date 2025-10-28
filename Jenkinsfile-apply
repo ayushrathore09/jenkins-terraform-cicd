@@ -1,0 +1,29 @@
+pipeline{
+    agent any
+    environment{
+        AWS_DEFAULT_REGION = "us-east-1"
+    }
+    stages {
+        stage('download tfplan artifacts'){
+            steps{
+                echo "downloading artifacts"
+                copyArtifacts(
+                    projectName: 'terraform-ci-cd-pipeline',
+                    selector: lastSuccessful()
+                )
+            }
+        }
+
+        stage('Terraform Apply'){
+            steps{
+                echo "applying terraform"
+                withCredentials([
+                    string(credentialsId:'aws-access-key', variable:'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId:'aws-secret-key', variable:'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                  sh 'terraform apply tfplan'
+                }
+            }
+        }
+    }
+}
