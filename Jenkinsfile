@@ -6,8 +6,17 @@ pipeline {
     stages {
         stage('code checkout'){
             steps{
-                //cleanWs()
+                cleanWs()
                 git url: "https://github.com/ayushrathore09/jenkins-terraform-cicd.git", branch: "master"
+            }
+        }
+
+        stage('Prepare the SSH Key'){
+            steps{
+                echo "copying ssh key to the workspace"
+                sh 'cp /var/lib/jenkins/.ssh/id_ed25519.pub .'
+                sh 'chmod 644 id_ed25519.pub'
+                sh 'ls -l'
             }
         }
 
@@ -29,7 +38,7 @@ pipeline {
                 }
                 sh 'terraform show -no-color tfplan > output_plan.txt' // converting binary file to human readable format
                 //archiving the tfplan file
-                archiveArtifacts artifacts: 'tfplan, output_plan.txt, .terraform.lock.hcl, mykey.pub', fingerprint: true, onlyIfSuccessful: true
+                archiveArtifacts artifacts: 'tfplan, output_plan.txt, .terraform.lock.hcl', fingerprint: true, onlyIfSuccessful: true
             }   
         }
 

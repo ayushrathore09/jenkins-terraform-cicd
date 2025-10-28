@@ -4,6 +4,22 @@ pipeline{
         AWS_DEFAULT_REGION = "us-east-1"
     }
     stages {
+
+        stage ('clear workspace'){
+            steps{
+                cleanWs()
+            }
+        }
+        
+        stage('Prepare SSH Key') {
+            steps {
+                echo "Copying SSH public key for Terraform Apply"
+                sh 'cp /var/lib/jenkins/.ssh/id_ed25519.pub .'
+                sh 'chmod 644 id_ed25519.pub'
+                sh 'ls -l id_ed25519.pub'
+            }
+        }
+
         stage('download tfplan artifacts'){
             steps{
                 echo "downloading artifacts"
