@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('code checkout'){
             steps{
-                cleanWs()
+                //cleanWs()
                 git url: "https://github.com/ayushrathore09/jenkins-terraform-cicd.git", branch: "master"
             }
         }
