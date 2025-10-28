@@ -9,7 +9,7 @@ pipeline{
                 echo "downloading artifacts"
                 copyArtifacts(
                     projectName: 'terraform-ci-cd-pipeline',
-                    selector: lastSuccessful(),
+                    selector: lastSuccessful()
                     // filter: 'tfplan, output_plan.txt, .terraform.lock.hcl'
                 )
                 sh 'ls -l'
@@ -23,6 +23,7 @@ pipeline{
                     string(credentialsId:'aws-access-key', variable:'AWS_ACCESS_KEY_ID'),
                     string(credentialsId:'aws-secret-key', variable:'AWS_SECRET_ACCESS_KEY')
                 ]) {
+                  sh 'terraform init -input=false' // re-initialize terraform
                   sh 'terraform apply tfplan'
                 }
             }
