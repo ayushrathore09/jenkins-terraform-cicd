@@ -27,10 +27,10 @@ pipeline{
                 }
             }
         }
-        post {
-            success{
-                archiveArtifacts artifacts: 'terraform.tfstate', fingerprint: true, onlyIfSuccessful: true
-            }
+    }
+    post {
+        success {
+            archiveArtifacts artifacts: 'terraform.tfstate', fingerprint: true, onlyIfSuccessful: true
         }
     }
 }
