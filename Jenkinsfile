@@ -4,9 +4,28 @@ pipeline {
         AWS_DEFAULT_REGION = "us-east-1"
     }
     stages {
-        stage('code checkout'){
+        stage('clear workspace'){
             steps{
                 cleanWs()
+            }
+        }
+
+        stage('Download latest state if available') {
+            steps {
+                script {
+                    try {
+                        echo "Attempting to download latest Terraform state..."
+                        copyArtifacts projectName: 'Terraform-apply', selector: lastSuccessful()
+                        echo "State file copied successfully."
+                    } catch (Exception e) {
+                        echo "No previous state found — starting fresh deployment."
+                    }
+                }
+            }
+        }      
+
+        stage('code checkout'){
+            steps{
                 git url: "https://github.com/ayushrathore09/jenkins-terraform-cicd.git", branch: "master"
             }
         }
