@@ -32,7 +32,7 @@ pipeline{
                     string(credentialsId:'aws-secret-key', variable:'AWS_SECRET_ACCESS_KEY')
                 ]) {
                   sh 'terraform init -input=false' // re-initialize terraform
-                  sh 'terraform apply tfplan'
+                  sh 'terraform apply -auto-approve tfplan'
                 }
             }
         }

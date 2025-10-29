@@ -38,6 +38,7 @@ pipeline {
                 }
                 sh 'terraform show -no-color tfplan > output_plan.txt' // converting binary file to human readable format
                 //archiving the tfplan file
+                sh 'ls -l'
                 archiveArtifacts artifacts: 'tfplan, terraform.tfstate, output_plan.txt, .terraform.lock.hcl', fingerprint: true, onlyIfSuccessful: true
             }   
         }
