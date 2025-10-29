@@ -37,10 +37,12 @@ pipeline {
                   sh 'terraform plan -out=tfplan' // this tfplan is a binary file which contains the execution plan
                 }
                 sh 'terraform show -no-color tfplan > output_plan.txt' // converting binary file to human readable format
+                
                 //archiving the tfplan file
                 sh 'ls -l'
-                archiveArtifacts artifacts: 'tfplan, terraform.tfstate, output_plan.txt, .terraform.lock.hcl', fingerprint: true, onlyIfSuccessful: true
-            }   
+                //archiveArtifacts artifacts: 'tfplan, terraform.tfstate, output_plan.txt, .terraform.lock.hcl', fingerprint: true, onlyIfSuccessful: true
+               archiveArtifacts artifacts: '**', fingerprint: true, onlyIfSuccessful: true // entire workspace archived
+            }
         }
 
         stage('Approval'){
