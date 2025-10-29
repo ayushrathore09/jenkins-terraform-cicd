@@ -52,7 +52,7 @@ pipeline {
         stage('trigger by code'){
             steps{
                 echo "Triggering terraform apply job"
-                build job: 'terraform-apply', wait: false
+                build job: 'Terraform-apply', wait: false
             }
         }
     }
