@@ -19,7 +19,6 @@ pipeline{
                 copyArtifacts(
                     projectName: 'terraform-ci-cd-pipeline',
                     selector: lastSuccessful()
-                    // filter: 'tfplan, output_plan.txt, .terraform.lock.hcl'
                 )
                 sh 'ls -l'
             }
