@@ -4,7 +4,7 @@ resource "aws_instance" "server1" {
     key_name = aws_key_pair.test-key.id
     vpc_security_group_ids = [aws_security_group.test-sg.id]
     tags = {
-      Name = "my-server"
+      Name = "test-server"
     }
 }
 
