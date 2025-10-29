@@ -20,7 +20,7 @@ pipeline{
                     projectName: 'terraform-ci-cd-pipeline',
                     selector: lastSuccessful()
                 )
-                sh 'ls -l >> artifacts_list.txt'
+                sh 'ls -l'
             }
         }
 
