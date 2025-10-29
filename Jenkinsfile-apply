@@ -29,7 +29,7 @@ pipeline{
         }
     }
     post {
-        success {
+        always {
             archiveArtifacts artifacts: 'terraform.tfstate', fingerprint: true, onlyIfSuccessful: true
         }
     }
