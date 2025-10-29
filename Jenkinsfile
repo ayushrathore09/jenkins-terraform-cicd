@@ -17,7 +17,7 @@ pipeline {
                         echo "Attempting to download latest Terraform state..."
                         copyArtifacts projectName: 'Terraform-apply', selector: lastSuccessful()
                         echo "State file copied successfully."
-                        sh 'ls -l'
+                        sh 'pwd && ls -l'
                     } catch (Exception e) {
                         echo "No previous state found — starting fresh deployment."
                     }
