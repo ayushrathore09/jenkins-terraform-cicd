@@ -16,7 +16,7 @@ pipeline {
             }
         }
 
-        stage('Download latest state if available') {
+        stage('Download latest tfstate if available') {
             steps {
                 script {
                     try {
@@ -33,7 +33,7 @@ pipeline {
             }
         }      
 
-        stage('Prepare the SSH Key'){
+        stage('copy the SSH Key to workspace'){
             steps{
                 echo "copying ssh key to the workspace"
                 sh 'cp /var/lib/jenkins/.ssh/id_ed25519.pub .'
@@ -73,7 +73,7 @@ pipeline {
             }
         }
 
-        stage('trigger by code'){
+        stage('trigger tf-apply job'){
             steps{
                 echo "Triggering terraform apply job"
                 build job: 'Terraform-apply', wait: false
