@@ -27,6 +27,35 @@ pipeline{
                 }
             }
         }
+        
+        stage('Approval for Destroy') {
+            steps {
+                script {
+                    try {
+                        input message: 'Do you want to destroy the infrastructure?', ok: 'Yes, Destroy!'
+                        env.DESTROY_OK = "true"
+                    } catch (e) {
+                        echo "Destroy rejected by user. Skipping destroy stage."
+                        env.DESTROY_OK = "false"
+                    }
+                }
+            }
+        }
+
+        stage ('terraform destroy'){
+            when {
+                expression { env.DESTROY_OK == "true" }
+            }
+            steps{
+                echo "destroying terraform infrastructure"
+                withCredentials([
+                    string(credentialsId:'aws-access-key', variable:'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId:'aws-secret-key', variable:'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                  sh 'terraform destroy -auto-approve'
+                }
+            }
+        }
     }
     post ('archiving tfstate file'){
         always {
