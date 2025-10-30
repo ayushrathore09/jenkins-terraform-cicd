@@ -10,6 +10,12 @@ pipeline {
             }
         }
 
+        stage('code checkout'){
+            steps{
+                git url: "https://github.com/ayushrathore09/jenkins-terraform-cicd.git", branch: "master"
+            }
+        }
+
         stage('Download latest state if available') {
             steps {
                 script {
@@ -17,19 +23,15 @@ pipeline {
                         echo "Attempting to download latest Terraform state..."
                         copyArtifacts projectName: 'Terraform-apply', selector: lastSuccessful()
                         echo "State file copied successfully."
-                        sh 'pwd && ls -l'
+                        sh 'ls -l'
+                        sh 'find $(pwd) -name terraform.tfstate'
+
                     } catch (Exception e) {
                         echo "No previous state found — starting fresh deployment."
                     }
                 }
             }
         }      
-
-        stage('code checkout'){
-            steps{
-                git url: "https://github.com/ayushrathore09/jenkins-terraform-cicd.git", branch: "master"
-            }
-        }
 
         stage('Prepare the SSH Key'){
             steps{
