@@ -4,7 +4,7 @@ resource "aws_instance" "server1" {
     key_name = aws_key_pair.test-key.id
     vpc_security_group_ids = [aws_security_group.test-sg.id]
     tags = {
-      Name = "my-server"
+      Name = "terraform-server-1"
     }
 }
 
@@ -20,6 +20,13 @@ resource "aws_security_group" "test-sg" {
   ingress {
     from_port   = 22
     to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
