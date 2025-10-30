@@ -9,7 +9,7 @@ pipeline {
                 cleanWs()
             }
         }
-
+        // by default git plugin clear the workspace before checkout so downloading latest state file must be done after code checkout
         stage('code checkout'){
             steps{
                 git url: "https://github.com/ayushrathore09/jenkins-terraform-cicd.git", branch: "master"
