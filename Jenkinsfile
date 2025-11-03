@@ -41,13 +41,39 @@ pipeline {
                 sh 'ls -l'
             }
         }
+// doing parallel stages for terraform init , tf fmt and tf validate to save time
 
-        stage('Terraform Init'){
-            steps{
-                echo "initializing terraform"
-                sh 'terraform init'
+        stage("terraform init, validate and fmt (parallel)"){
+            parallel {
+                stage('Terraform Init') {
+                    steps{
+                        echo "initializing terraform"
+                        sh 'terraform init'
+                    }
+                }
+
+                stage('Terraform Validate'){
+                    steps{
+                        echo "validating terraform code"
+                        sh 'terraform validate'
+                    }
+                }
+
+                stage('Terraform Fmt'){
+                    steps{
+                        echo "formatting terraform code"
+                        sh 'terraform fmt -check' // if format is not correct then it will return non zero exit code and fail the build
+                    }
+                }   
             }
         }
+        
+        // stage('Terraform Init'){
+        //     steps{
+        //         echo "initializing terraform"
+        //         sh 'terraform init'
+        //     }
+        // }
 
         stage('Terraform Plan'){
             steps{
