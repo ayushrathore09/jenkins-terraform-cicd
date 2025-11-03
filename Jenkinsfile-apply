@@ -6,12 +6,18 @@ pipeline{
     stages {
         stage('download tfplan artifacts'){
             steps{
-                echo "downloading artifacts"
-                copyArtifacts(
-                    projectName: 'terraform-ci-cd-pipeline',
-                    selector: lastSuccessful()
-                )
-                sh 'ls -l'
+                script {
+                    retry(2) {
+                        timeout(time: 2, unit: 'MINUTES') {
+                            echo "downloading artifacts"
+                            copyArtifacts(
+                                projectName: 'terraform-ci-cd-pipeline',
+                                selector: lastSuccessful()
+                            )
+                        }
+                    }
+                    sh 'ls -l'
+                }
             }
         }
 
