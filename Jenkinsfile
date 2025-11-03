@@ -41,7 +41,7 @@ pipeline {
                 sh 'ls -l'
             }
         }
-// doing parallel stages for terraform init , tf fmt and tf validate to save time
+// doing parallel stages for terraform init , tf fmt to save time
 
         stage("terraform init,fmt (parallel)"){
             parallel {
@@ -67,28 +67,30 @@ pipeline {
                 sh 'terraform validate'
             }
         } 
-        // stage('Terraform Init'){
-        //     steps{
-        //         echo "initializing terraform"
-        //         sh 'terraform init'
-        //     }
-        // }
 
         stage('Terraform Plan'){
+            // options {
+            //     timeout(time: 5, unit: 'MINUTES') // stage level setting timeout to prevent hanging builds
+            // }
             steps{
-                echo "Planning terraform"
-                withCredentials([
-                    string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
-                    string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')
-                ]) {
-                  sh 'terraform plan -out=tfplan' // this tfplan is a binary file which contains the execution plan
+                script {
+                    retry(2) {
+                        timeout(time: 5, unit: 'MINUTES') { // step level setting timeout to prevent hanging builds
+                            withCredentials([
+                                string(credentialsId: 'aws-access-key', variable: 'AWS_ACCESS_KEY_ID'),
+                                string(credentialsId: 'aws-secret-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                            ]) {
+                                sh 'terraform plan -out=tfplan' // this tfplan is a binary file which contains the execution plan
+                            }
+                            sh 'terraform show -no-color tfplan > output_plan.txt' // converting binary file to human readable format       
+                        }
+                        
+                    }
+                    //archiving the tfplan file
+                    sh 'ls -l'
+                    //archiveArtifacts artifacts: 'tfplan, terraform.tfstate, output_plan.txt, .terraform.lock.hcl', fingerprint: true, onlyIfSuccessful: true
+                    archiveArtifacts artifacts: '**', fingerprint: true, onlyIfSuccessful: true // entire workspace archived
                 }
-                sh 'terraform show -no-color tfplan > output_plan.txt' // converting binary file to human readable format
-                
-                //archiving the tfplan file
-                sh 'ls -l'
-                //archiveArtifacts artifacts: 'tfplan, terraform.tfstate, output_plan.txt, .terraform.lock.hcl', fingerprint: true, onlyIfSuccessful: true
-               archiveArtifacts artifacts: '**', fingerprint: true, onlyIfSuccessful: true // entire workspace archived
             }
         }
 
@@ -99,6 +101,9 @@ pipeline {
         }
 
         stage('trigger tf-apply job'){
+            options {
+                timeout(time: 60, unit: 'SECONDS') // stage level setting timeout to prevent hanging builds
+            }
             steps{
                 echo "Triggering terraform apply job"
                 build job: 'Terraform-apply', wait: false
